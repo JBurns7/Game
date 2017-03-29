@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <title>Monster Hunt</title>
+  <style>
+    body {
+      background: #e0e0e0;
+    }
+
+    canvas {
+      display: block;
+      border: 1px solid #999999;
+      background: #ffffff;
+      margin: 40px auto;
+    }
+  </style>
+
+  <body>
+
+  <script>
+  
+    // Create the canvas
+    var canvas = document.createElement("canvas");
+    canvas.width = 600;
+    canvas.height = 480;
+    document.body.appendChild(canvas);
+
+
+    // Create a hero variable to keep track of the hero's stats & position.
+    var hero = {
+      x: 264,       // Half the width of the canvas - half the width of the image
+      y: 204,       // Same but for the heights
+	  health: 10,
+	  points: 0,
+	  naga: false,
+    }
+
+    // Create an image for our hero
+    var heroImage = new Image();
+    heroImage.src = "images/mage.png";
+
+    
+    // create a function to draw our hero
+    var ctx = canvas.getContext("2d");
+    var render = function () {
+      
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw our hero
+      ctx.drawImage(heroImage, hero.x, hero.y);
+
+      // Add some text
+      ctx.font = "24px Sans";
+      ctx.textAlign = "center";
+      ctx.fillText("Points: " + hero.points, 70, 415);
+	  
+	  ctx.font = "24px Sans";
+      ctx.textAlign = "center";
+      ctx.fillText("Health: " + hero.health, 75, 450);
+
+    };
+
+  
+    // Listen for keys being pressed
+    var keysDown = {};
+
+    addEventListener("keydown", function (e) {
+	  keysDown[e.keyCode] = true;
+    }, false);
+
+    addEventListener("keyup", function (e) {
+	  delete keysDown[e.keyCode];
+    }, false);
+
+    
+    // Update the position based on what keys are pressed. Only right implemented
+    // so far. Arrow keys are 37 - 40. Space is 32.
+    var update = function() {
+      if (39 in keysDown) { // Player holding right
+		hero.x += 3
+	  }
+	  if(37 in keysDown) {
+	    hero.x -= 3
+	  }
+	  if(40 in keysDown) {
+	    hero.y += 3
+	  }
+	  if(38 in keysDown) {
+	    hero.y -= 3
+	   }
+	  if ((32 in keysDown) && (hero.naga === false)) {
+		heroImage.src = "images/naga.png";
+		hero.naga = true;
+		setTimeout(sprite,500)
+		hero.points += 1;
+		hero.health -= 1;
+	   }
+	   if(hero.x > canvas.width - heroImage.width) {
+	        hero.x = canvas.width - heroImage.width
+		}
+	    if(hero.y > canvas.height - heroImage.height) {
+	        hero.y = canvas.height - heroImage.height
+		}
+		if (hero.x < 0) {
+			hero.x = 0;
+		}
+		if(hero.y < 0) {
+		    hero.y = 0;
+	    }
+	    
+	};
+	
+	var sprite = function() {
+	    heroImage.src = "images/mage.png";
+		hero.naga = false;
+	}
+
+      
+    
+
+
+    // main game loop
+    var main = function() {
+
+      update();
+      render();
+
+    }
+
+    // repeat main every 1/100 of a second.
+    setInterval(main, 10);
+
+  </script>
+  </body>
+</html>
